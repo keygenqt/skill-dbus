@@ -1,0 +1,36 @@
+<node>
+    <interface name='org.freedesktop.DBus.Introspectable'>
+        <method name='Introspect'>
+            <arg name='data' type='s' direction='out' />
+        </method>
+    </interface>
+    
+    <interface name='org.freedesktop.DBus.Properties'>
+        <method name='Get'>
+            <arg name='interface' type='s' direction='in' />
+            <arg name='property' type='s' direction='in' />
+            <arg name='value' type='s' direction='out' />
+        </method>
+        <method name='GetAll'>
+            <arg name='interface' type='s' direction='in'/>
+            <arg name='properties' type='a{sv}' direction='out'/>
+        </method>
+    </interface>
+
+    <interface name='org.example.TestInterface'>
+        <property name='Version' type='s' access='read' />
+        <method name='Ping' >
+            <arg type='s' direction='out' />
+        </method>
+        <method name='Echo'>
+            <arg name='string' direction='in' type='s'/>
+            <arg type='s' direction='out' />
+        </method>
+        <method name='EmitSignal'>
+        </method>
+        <method name='Quit'>
+        </method>
+        <signal name='OnEmitSignal'>
+        </signal>
+    </interface>
+</node>

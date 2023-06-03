@@ -1,0 +1,4 @@
+.vscode
+client/_main.cpp
+server/_main.cpp
+builddir
