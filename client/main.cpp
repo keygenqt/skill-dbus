@@ -4,7 +4,7 @@
 
 int main(void)
 {
-	auto client = ClientDbus();
+    auto client = ClientDbus();
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
