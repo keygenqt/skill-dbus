@@ -5,16 +5,16 @@
 #include <chrono>
 #include <thread>
 
-#include "test_dbus.h"
+#include "server_dbus.h"
 
 using namespace std::chrono_literals;
 
-DBusHandlerResult TestDbus::messageFunction(DBusConnection *conn, DBusMessage *message, void *data)
+DBusHandlerResult ServerDbus::messageFunction(DBusConnection *conn, DBusMessage *message, void *data)
 {
-	return static_cast<TestDbus *>(data)->messageHandler(conn, message, data);
+	return static_cast<ServerDbus *>(data)->messageHandler(conn, message, data);
 }
 
-DBusHandlerResult TestDbus::propertyHandler(const char *property, DBusConnection *conn, DBusMessage *reply)
+DBusHandlerResult ServerDbus::propertyHandler(const char *property, DBusConnection *conn, DBusMessage *reply)
 {
 	if (!strcmp(property, "Version"))
 	{
@@ -36,7 +36,7 @@ DBusHandlerResult TestDbus::propertyHandler(const char *property, DBusConnection
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
-DBusHandlerResult TestDbus::propertiesHandler(DBusConnection *conn, DBusMessage *reply)
+DBusHandlerResult ServerDbus::propertiesHandler(DBusConnection *conn, DBusMessage *reply)
 {
 	DBusMessageIter array, dict, iter, variant;
 
@@ -62,7 +62,7 @@ DBusHandlerResult TestDbus::propertiesHandler(DBusConnection *conn, DBusMessage 
 	}
 }
 
-DBusHandlerResult TestDbus::methodCall(DBusConnection *conn, DBusMessage *message, std::function<void(DBusMessage *reply)> setArg)
+DBusHandlerResult ServerDbus::methodCall(DBusConnection *conn, DBusMessage *message, std::function<void(DBusMessage *reply)> setArg)
 {
 	DBusMessage *reply = NULL;
 
@@ -85,7 +85,7 @@ DBusHandlerResult TestDbus::methodCall(DBusConnection *conn, DBusMessage *messag
 	}
 }
 
-DBusHandlerResult TestDbus::messageHandler(DBusConnection *conn, DBusMessage *message, void *data)
+DBusHandlerResult ServerDbus::messageHandler(DBusConnection *conn, DBusMessage *message, void *data)
 {
 	DBusHandlerResult result;
 	DBusMessage *reply = NULL;
@@ -216,7 +216,7 @@ DBusHandlerResult TestDbus::messageHandler(DBusConnection *conn, DBusMessage *me
 	}
 }
 
-bool TestDbus::run()
+int ServerDbus::run()
 {
 	// init error
 	dbus_error_init(&err);
@@ -227,7 +227,7 @@ bool TestDbus::run()
 	// check connect
 	if (!connect)
 	{
-		return false;
+		return EXIT_FAILURE;
 	}
 
 	// request registration name
@@ -236,7 +236,7 @@ bool TestDbus::run()
 	// check registration
 	if (rn != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
 	{
-		return false;
+		return EXIT_FAILURE;
 	}
 
 	DBusObjectPathVTable vtable = {.message_function = messageFunction};
@@ -247,7 +247,7 @@ bool TestDbus::run()
 	// check registration
 	if (!rp)
 	{
-		return false;
+		return EXIT_FAILURE;
 	}
 
 	// create glib event loop
@@ -259,5 +259,5 @@ bool TestDbus::run()
 	// start the glib event loop
 	g_main_loop_run(mainloop);
 
-	return true;
+	return EXIT_SUCCESS;
 }

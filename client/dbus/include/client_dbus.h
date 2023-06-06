@@ -1,0 +1,5 @@
+class ClientDbus
+{
+public:
+    ClientDbus();
+};

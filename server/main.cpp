@@ -1,9 +1,6 @@
-#include "test_dbus.h"
+#include "server_dbus.h"
 
 int main(void)
 {
-	auto serverTestDbus = TestDbus();
-	serverTestDbus.run();
-
-	return 0;
+	return ServerDbus().run();
 }

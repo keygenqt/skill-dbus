@@ -1,3 +1,19 @@
+#include <string>
+#include <functional>
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
+class ServerDbus
+{
+public:
+	int run();
+
+public:
+	const std::string name = "org.example.TestServer";
+	const std::string interface = "org.example.TestInterface";
+	const std::string path = "/org/example/TestObject";
+	const std::string version = "0.0.1";
+	const std::string introspection = R"xml(
 <node>
     <interface name='org.freedesktop.DBus.Introspectable'>
         <method name='Introspect'>
@@ -34,3 +50,18 @@
         </signal>
     </interface>
 </node>
+)xml";
+
+private:
+    static DBusHandlerResult messageFunction(DBusConnection *, DBusMessage *, void *);
+
+	DBusHandlerResult messageHandler(DBusConnection *, DBusMessage *, void *);
+	DBusHandlerResult propertyHandler(const char *, DBusConnection *, DBusMessage *);
+	DBusHandlerResult propertiesHandler(DBusConnection *, DBusMessage *);
+    DBusHandlerResult methodCall(DBusConnection *conn, DBusMessage *message, std::function<void(DBusMessage *reply)>);
+
+private:
+	DBusConnection *connect;
+	GMainLoop *mainloop;
+	DBusError err;
+};
