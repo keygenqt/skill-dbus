@@ -2,5 +2,5 @@
 
 int main(void)
 {
-	return ServerDbus().run();
+    return ServerDbus().run();
 }
