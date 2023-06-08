@@ -1,6 +1,6 @@
 # C++ D-Bus example
 
-I study D-Bus, I write on c++ an example of a client and server application.
+D-Bus client/server example in c++ using dbus & gio.
 
 ### Dependency
 

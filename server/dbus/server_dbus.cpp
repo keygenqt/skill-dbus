@@ -4,14 +4,17 @@
 #include <functional>
 #include <chrono>
 #include <thread>
+#include <regex>
 
 #include "server_dbus.h"
 
 using namespace std::chrono_literals;
 
-DBusHandlerResult ServerDbus::messageFunction(DBusConnection *conn, DBusMessage *message, void *data)
+ServerDbus::ServerDbus(std::string name, std::string interface, std::string path)
 {
-    return static_cast<ServerDbus *>(data)->messageHandler(conn, message, data);
+    this->name = name;
+    this->interface = interface;
+    this->path = path;
 }
 
 DBusHandlerResult ServerDbus::propertyHandler(const char *property, DBusConnection *conn, DBusMessage *reply)
@@ -148,7 +151,7 @@ DBusHandlerResult ServerDbus::messageHandler(DBusConnection *conn, DBusMessage *
             }
 
             // delay
-            for (int i : {1, 2, 3, 4, 5})
+            for (int i : {1, 2, 3})
             {
                 std::this_thread::sleep_for(1000ms);
                 std::cout << "Loadin signal " << i << "s..." << std::endl;
@@ -165,10 +168,13 @@ DBusHandlerResult ServerDbus::messageHandler(DBusConnection *conn, DBusMessage *
         if (dbus_message_is_method_call(message, DBUS_INTERFACE_INTROSPECTABLE, "Introspect"))
         {
             return methodCall(conn, message, [this](DBusMessage *reply)
-                            { dbus_message_append_args(reply,
+                            { 
+                                dbus_message_append_args(reply,
                                                         DBUS_TYPE_STRING,
-                                                        DBUS_INTROSPECT_1_0_XML_DOCTYPE_DECL_NODE + introspection,
-                                                        DBUS_TYPE_INVALID); });
+                                                        DBUS_INTROSPECT_1_0_XML_DOCTYPE_DECL_NODE 
+                                                            + regex_replace(introspection, std::regex("\\{Interface\\}"), this->interface),
+                                                        DBUS_TYPE_INVALID); 
+                            });
         }
 
         if (dbus_message_is_method_call(message, DBUS_INTERFACE_PROPERTIES, "GetAll"))
@@ -260,4 +266,9 @@ int ServerDbus::run()
     g_main_loop_run(mainloop);
 
     return EXIT_SUCCESS;
+}
+
+DBusHandlerResult ServerDbus::messageFunction(DBusConnection *conn, DBusMessage *message, void *data)
+{
+    return static_cast<ServerDbus *>(data)->messageHandler(conn, message, data);
 }

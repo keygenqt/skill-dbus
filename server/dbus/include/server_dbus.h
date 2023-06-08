@@ -6,12 +6,10 @@
 class ServerDbus
 {
 public:
+    ServerDbus(std::string name, std::string interface, std::string path);
     int run();
 
 public:
-    const std::string name = "org.example.TestServer";
-    const std::string interface = "org.example.TestInterface";
-    const std::string path = "/org/example/TestObject";
     const std::string version = "0.0.1";
     const std::string introspection = R"xml(
 <node>
@@ -33,7 +31,7 @@ public:
         </method>
     </interface>
 
-    <interface name='org.example.TestInterface'>
+    <interface name='{Interface}'>
         <property name='Version' type='s' access='read' />
         <method name='Ping' >
             <arg type='s' direction='out' />
@@ -59,6 +57,10 @@ private:
     DBusHandlerResult propertyHandler(const char *, DBusConnection *, DBusMessage *);
     DBusHandlerResult propertiesHandler(DBusConnection *, DBusMessage *);
     DBusHandlerResult methodCall(DBusConnection *conn, DBusMessage *message, std::function<void(DBusMessage *reply)>);
+
+    std::string name;
+    std::string interface;
+    std::string path;
 
 private:
     DBusConnection *connect;
