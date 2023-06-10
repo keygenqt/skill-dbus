@@ -8,7 +8,18 @@ D-Bus client/server example in c++ using dbus & gio.
 * [dbus-glib](https://dbus.freedesktop.org/doc/dbus-glib/)
 * [gio-2.0](https://docs.gtk.org/gio/)
 
+### Building
 
+```shell
+## server
+cd server
+meson builddir && cd builddir
+meson compile && ./server
+
+## client
+cd client
+meson builddir && cd builddir
+meson compile && ./client
 ```
 Copyright 2023 Vitaliy Zarubin
 
