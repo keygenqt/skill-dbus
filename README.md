@@ -22,6 +22,8 @@ meson builddir && cd builddir
 meson compile && ./client
 ```
 
+### License
+
 ```
 Copyright 2023 Vitaliy Zarubin
 
