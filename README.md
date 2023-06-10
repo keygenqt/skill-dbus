@@ -21,6 +21,8 @@ cd client
 meson builddir && cd builddir
 meson compile && ./client
 ```
+
+```
 Copyright 2023 Vitaliy Zarubin
 
 Licensed under the Apache License, Version 2.0 (the "License");
